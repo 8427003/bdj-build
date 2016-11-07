@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/**
+dist/**
+logs/**
+.swp
+npm-debug.log
+tmp
+
