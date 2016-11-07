@@ -8,25 +8,51 @@ var path = require('path');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.client.config.js');
-
+var isProduction = process.env.NODE_ENV === 'production' ? true : false;
 var compiler = webpack(config);
+
+if (isProduction) {
+    compiler.run(function (err, stat){
+        if(err) {
+            console.log(err);
+            return;
+        }
+        console.log('Client build: ', (stat.endTime - stat.startTime)/1000 + 's');
+    });
+
+    return;
+}
+
+compiler.plugin('done', function(err, stat) {
+    if(err) {
+        console.log(err);
+        return;
+    }
+    console.log('Client build: ', (stat.endTime - stat.startTime)/1000 + 's');
+});
 var server = new WebpackDevServer(compiler, {
     hot: true,
     quiet: true,
     noInfo: false,
+    clientLogLevel: 'error',
     watchOptions: {
         aggregateTimeout: 300,
         poll: 1000
     },
     publicPath: "/static/",
-    stats: {
-        colors: true
-    },
     proxy: {
         "**": "http://localhost:8083"
     }
 });
-server.listen(8080, "localhost", function() {});
+server.listen(8080, "localhost", function(err,) {
+    if(err) {
+        console.error('Client build failed:', err);
+    }
+    else {
+        console.log('Browse to http://localhost:' + options.devServerPort);
+    }
+});
+
 
 
 
