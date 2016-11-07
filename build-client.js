@@ -39,7 +39,7 @@ var server = new WebpackDevServer(compiler, {
     proxy: {
         "**": {
             target: "http://localhost:8080",
-            loglevel: 'error'
+            logLevel: 'error'
         }
     }
 });

@@ -34,20 +34,29 @@ serverCompier.watch({
     console.log('Server build: ', (stat.endTime - stat.startTime)/1000 + 's');
 
     if (hasStart) {
-        console.log('emit:restart');
+        console.log('Server:restart');
         nodemon.emit('restart');
     }
     else {
         // nodemon.emit('quit');
-        nodemon({
+        var monitor = nodemon({
             script: './dist/app.js',
             "watch": [
                 "./dist/app.js"
             ]
         });
+
+        // https://github.com/JacksonGariety/gulp-nodemon/issues/77
+        process.once('SIGINT', function() {
+            monitor.once('exit', function() {
+                process.exit();
+            });
+        });
         hasStart = true;
     }
 })
+
+
 
 
 
