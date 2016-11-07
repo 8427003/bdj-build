@@ -37,7 +37,10 @@ var server = new WebpackDevServer(compiler, {
     },
     publicPath: "/static/",
     proxy: {
-        "**": "http://localhost:8080"
+        "**": {
+            target: "http://localhost:8080",
+            loglevel: 'error'
+        }
     }
 });
 server.listen(8082, "localhost", function(err) {
