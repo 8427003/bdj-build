@@ -16,10 +16,10 @@ var isProduction = process.env.NODE_ENV === 'production' ? true : false;
 var config = {
     entry: getEntry('src/views/page/**/*.entry.js?(x)', 'src/views/page/'),
     output: {
-        path: process.cwd(),
+        path: path.join(process.cwd(), './dist/public/static'),
         publicPath: '/static/',
-        filename: 'dist/public/static/scripts/[name]' + getHash(isProduction) + '.js',
-        chunkFilename: 'dist/public/static/scripts/[id]' + getHash(isProduction) + '.js'
+        filename: 'scripts/[name]' + getHash(isProduction) + '.js',
+        chunkFilename: 'scripts/[id]' + getHash(isProduction) + '.js'
     },
     resolve: {
         alias: {
@@ -75,7 +75,7 @@ var config = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin('dist/public/static/styles/[name]' + getHash(isProduction) + '.css'),
+        new ExtractTextPlugin('styles/[name]' + getHash(isProduction) + '.css'),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -102,7 +102,7 @@ if (!isProduction) {
     Array.prototype.push.apply(config.plugins, pluginList);
 
     for (var i in config.entry) {
-        config.entry[i].unshift("webpack-dev-server/client?http://localhost:8080/", "webpack/hot/dev-server");
+        config.entry[i].unshift("webpack-dev-server/client?http://localhost:8082/", "webpack/hot/dev-server");
     }
 }
 
@@ -110,7 +110,7 @@ if (!isProduction) {
 pages = Object.keys(getEntry('src/views/page/**/*.html', 'src/views/page/'))
 pages.forEach(function(pathname) {
     var conf = {
-        filename: 'dist/app/views/page/' + pathname + '.html', //生成的html存放路径，相对于output.path
+        filename: '../../app/views/page/' + pathname + '.html', //生成的html存放路径，相对于output.path
         template: '!!ejs!src/views/page/' + pathname + '.html', // 相对cwd
         inject: false,
         showErrors: true,

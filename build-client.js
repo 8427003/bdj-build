@@ -23,11 +23,7 @@ if (isProduction) {
     return;
 }
 
-compiler.plugin('done', function(err, stat) {
-    if(err) {
-        console.log(err);
-        return;
-    }
+compiler.plugin('done', function(stat) {
     console.log('Client build: ', (stat.endTime - stat.startTime)/1000 + 's');
 });
 var server = new WebpackDevServer(compiler, {
@@ -41,15 +37,15 @@ var server = new WebpackDevServer(compiler, {
     },
     publicPath: "/static/",
     proxy: {
-        "**": "http://localhost:8083"
+        "**": "http://localhost:8080"
     }
 });
-server.listen(8080, "localhost", function(err,) {
+server.listen(8082, "localhost", function(err) {
     if(err) {
         console.error('Client build failed:', err);
     }
     else {
-        console.log('Browse to http://localhost:' + options.devServerPort);
+        console.log('Browse to http://localhost:8082' );
     }
 });
 
