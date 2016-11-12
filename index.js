@@ -41,7 +41,7 @@ if (isProduction) {
             console.log(err);
             return;
         }
-        console.log('Server build finish: ', (stat.endTime - stat.startTime)/1000 + 's');
+        console.log('Server build '+ stat.hash +' in '+ (stat.endTime - stat.startTime)/1000 +'s');
     });
 
     clientCompiler.run(function (err, stat){
@@ -49,7 +49,7 @@ if (isProduction) {
             console.log(err);
             return;
         }
-        console.log('Client build finish: ', (stat.endTime - stat.startTime)/1000 + 's');
+        console.log('Client build '+ stat.hash +' in '+ (stat.endTime - stat.startTime)/1000 +'s');
     });
 
     return;
@@ -63,7 +63,7 @@ serverCompiler.watch({
         console.log(err);
         return;
     }
-    console.log('Server build: ', (stat.endTime - stat.startTime)/1000 + 's');
+    console.log('Server build '+ stat.hash +' in '+ (stat.endTime - stat.startTime) +'ms');
     reloadApp();
 })
 
