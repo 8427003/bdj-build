@@ -7,7 +7,6 @@
 var path = require('path');
 var http = require('http');
 var fs = require('fs-extra');
-var gulp = require('gulp');
 var webpack = require('webpack');
 var clientConfig = require('./webpack.client.config.js');
 var serverConfig =require('./webpack.server.config.js');
