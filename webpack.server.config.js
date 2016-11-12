@@ -12,12 +12,13 @@ fs.readdirSync('node_modules')
     });
 
 module.exports = {
-    entry: ['babel-polyfill', './app.js'],
+    entry: ['babel-polyfill', './src/route.js'],
     target: 'node',
     externals: nodeModules,
     output: {
         path: process.cwd(),
-        filename: './dist/app.js'
+        libraryTarget: 'commonjs2',
+        filename: './dist/app/route.js'
     },
     resolve: {
         root: [

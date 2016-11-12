@@ -102,7 +102,8 @@ if (!isProduction) {
     Array.prototype.push.apply(config.plugins, pluginList);
 
     for (var i in config.entry) {
-        config.entry[i].unshift("webpack-dev-server/client?http://localhost:8082/", "webpack/hot/dev-server");
+        config.entry[i].push('webpack-hot-middleware/client?reload=true')
+
     }
 }
 

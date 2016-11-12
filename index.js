@@ -17,27 +17,41 @@ var clientCompiler = null;
 var serverCompiler = null;
 var app = null;
 
+console.log('Build start, maybe takes tens of seconds, please wait...')
 serverCompiler = webpack(serverConfig);
 clientCompiler = webpack(clientConfig);
 
 if (isProduction) {
-    serverCompier.run(function (err, stat){
+
+    fs.removeSync(path.join(process.cwd(), './dist'));
+
+    var pStartTime = new Date();
+    fs.copy(
+        path.join(process.cwd(), './node_modules'),
+        path.join(process.cwd(), './dist/node_modules'),
+        function () {
+            console.log('Packaging dependences finish: ', (new Date() - pStartTime)/1000 + 's');
+        }
+    );
+
+    serverCompiler.run(function (err, stat){
         if(err) {
             console.log(err);
             return;
         }
-        console.log('Server build: ', (stat.endTime - stat.startTime)/1000 + 's');
+        console.log('Server build finish: ', (stat.endTime - stat.startTime)/1000 + 's');
     });
 
-    clientCompier.run(function (err, stat){
+    clientCompiler.run(function (err, stat){
         if(err) {
             console.log(err);
             return;
         }
-        console.log('Client build: ', (stat.endTime - stat.startTime)/1000 + 's');
+        console.log('Client build finish: ', (stat.endTime - stat.startTime)/1000 + 's');
     });
 
     return;
+
 }
 
 serverCompiler.watch({
