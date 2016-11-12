@@ -1,6 +1,6 @@
 {
   "name": "bdj-build",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
+    "bdj-container": "^0.1.6",
     "commander": "^2.9.0",
     "css-loader": "^0.23.1",
     "ejs-loader": "^0.3.0",
