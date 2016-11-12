@@ -22,8 +22,8 @@ module.exports = {
     },
     resolve: {
         root: [
-            path.resolve('src/views/page'),
-            path.resolve('node_modules'),
+            path.resolve('./src'),
+            path.resolve('./node_modules'),
         ],
         extensions: ['', '.js', '.css', '.json']
     },
