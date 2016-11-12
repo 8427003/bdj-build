@@ -16,14 +16,17 @@ var clientCompiler = null;
 var serverCompiler = null;
 var app = null;
 
-console.log('Build start, maybe takes tens of seconds, please wait...')
+console.log('Building, about takes tens of seconds, please wait...')
+
+// clean
+fs.removeSync(path.join(process.cwd(), './dist'));
+
 serverCompiler = webpack(serverConfig);
 clientCompiler = webpack(clientConfig);
 
 if (isProduction) {
 
-    fs.removeSync(path.join(process.cwd(), './dist'));
-
+    // packaging deps
     var pStartTime = new Date();
     fs.copy(
         path.join(process.cwd(), './node_modules'),
@@ -72,18 +75,23 @@ function _runApp() {
         "publicPath": path.join(process.cwd(), "/dist/public"),
         "appPath": path.join(process.cwd(), "/dist/app")
     });
-    app.use(require('webpack-dev-middleware')(clientCompiler, {
+    var dev = require('webpack-dev-middleware')(clientCompiler, {
         noInfo: true,
         stats: {
             colors: true
         },
         publicPath: '/static/',
 
-    }));
-    app.use(require("webpack-hot-middleware")(clientCompiler));
-    http.createServer(app).listen(app.get('port'), function(){
+    });
+    dev.waitUntilValid(function (){
         console.info('Express server listening on port ' + app.get('port'));
-        console.info('webpack building, please wait...');
+    })
+    app.use(dev);
+    app.use(require("webpack-hot-middleware")(clientCompiler));
+    http.createServer(app).listen(app.get('port'), function(err){
+        if (err) {
+            console.log(err)
+        }
     });
 }
 
