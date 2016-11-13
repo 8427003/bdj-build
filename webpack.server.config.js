@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var fs = require('fs');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var isProduction = process.env.NODE_ENV === 'production' ? true : false;
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
@@ -12,7 +13,7 @@ fs.readdirSync('node_modules')
         nodeModules[mod] = 'commonjs ' + mod;
     });
 
-module.exports = {
+var config = {
     entry: ['babel-polyfill', './src/route.js'],
     target: 'node',
     externals: nodeModules,
@@ -32,14 +33,8 @@ module.exports = {
         __dirname  :  false,
 		__filename : false
     },
-    devtool: 'eval',
     plugins: [
-        new webpack.BannerPlugin('require("source-map-support").install();', {
-            raw: true,
-            entryOnly: false 
-        }),
         new CopyWebpackPlugin([
-            // {output}/to/file.txt
             { from: 'src/config', to: 'dist/app/config' }
         ])
     ],
@@ -87,3 +82,15 @@ module.exports = {
         ]
     }
 };
+
+if (!isProduction) {
+    config.devtool = 'eval';
+    config.plugins.push(
+        new webpack.BannerPlugin('require("source-map-support").install();', {
+            raw: true,
+            entryOnly: false
+        })
+    )
+}
+
+module.exports = config;

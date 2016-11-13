@@ -106,6 +106,11 @@ if (!isProduction) {
 
     }
 }
+else {
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({})
+    )
+}
 
 // html
 pages = Object.keys(getEntry('src/views/page/**/*.html', 'src/views/page/'))
