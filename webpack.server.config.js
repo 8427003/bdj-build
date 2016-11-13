@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var fs = require('fs');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
@@ -36,7 +37,11 @@ module.exports = {
         new webpack.BannerPlugin('require("source-map-support").install();', {
             raw: true,
             entryOnly: false 
-        })
+        }),
+        new CopyWebpackPlugin([
+            // {output}/to/file.txt
+            { from: 'src/config', to: 'dist/app/config' }
+        ])
     ],
     module: {
         loaders: [ //加载器
