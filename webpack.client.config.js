@@ -14,9 +14,11 @@ var pages = [];
 var isProduction = process.env.NODE_ENV === 'production' ? true : false;
 
 var config = {
-    entry: getEntry('src/views/page/**/*.entry.js?(x)', 'src/views/page/'),
+    entry: getEntry('src/views/**/*.entry.js?(x)', 'src/views/'),
     output: {
         path: path.join(process.cwd(), './dist/public/static'),
+        library: 'window=window;window\["[name]".split("/")[1]\]',
+        libraryTarget: 'var',
         publicPath: '/static/',
         filename: 'scripts/[name]' + getHash(isProduction) + '.js',
         chunkFilename: 'scripts/[id]' + getHash(isProduction) + '.js'
@@ -70,12 +72,20 @@ var config = {
                 query: {
                     presets: ['es2015','react']
                 }
+            },
+            {
+                test: require.resolve("react"),
+                loader: "expose-loader?React"
+            },
+            {
+                test: require.resolve("react-dom"),
+                loader: "expose-loader?ReactDOM"
             }
-
         ]
     },
     plugins: [
         new ExtractTextPlugin('styles/[name]' + getHash(isProduction) + '.css'),
+        new CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -100,9 +110,8 @@ if (!isProduction) {
         })
     ];
     Array.prototype.push.apply(config.plugins, pluginList);
-
     for (var i in config.entry) {
-        config.entry[i].push('webpack-hot-middleware/client?reload=true')
+        config.entry[i].unshift('webpack-hot-middleware/client?reload=true')
 
     }
 }
@@ -111,20 +120,24 @@ else {
         new webpack.optimize.UglifyJsPlugin({})
     )
 }
+config.entry.vendor = [
+    'react',
+    'react-dom'
+]
 
 // html
-pages = Object.keys(getEntry('src/views/page/**/*.html', 'src/views/page/'))
+pages = Object.keys(getEntry('src/views/**/*.html', 'src/views/'))
 pages.forEach(function(pathname) {
     var conf = {
-        filename: '../../app/views/page/' + pathname + '.html', //生成的html存放路径，相对于output.path
-        template: '!!ejs!src/views/page/' + pathname + '.html', // 相对cwd
+        filename: '../../app/views/' + pathname + '.html', //生成的html存放路径，相对于output.path
+        template: '!!ejs!src/views/' + pathname + '.html', // 相对cwd
         inject: false,
         showErrors: true,
         cache: true
     };
     if (pathname in config.entry) {
         conf.inject = false;
-        conf.chunks = [pathname];
+        conf.chunks = ['vendor', pathname];
         conf.hash = false;
     }
     config.plugins.push(new HtmlWebpackPlugin(conf));
