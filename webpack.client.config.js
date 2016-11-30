@@ -88,12 +88,7 @@ var config = {
         new CommonsChunkPlugin('vendor', 'vendor.bundle.js'),
         new webpack.ProvidePlugin({
             $: "jquery",
-            jQuery: "jquery",
-            bootstrap: "bootstrap",
-            datepicker: 'datepicker',
-            datepickercss: 'datepickercss',
-            datepickercn: 'datepickercn',
-            _: "underscore"
+            jQuery: "jquery"
         })
     ]
 };

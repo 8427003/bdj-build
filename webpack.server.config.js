@@ -27,6 +27,13 @@ var config = {
             path.resolve('./src'),
             path.resolve('./node_modules'),
         ],
+        alias: {
+            bootstrap:  path.resolve('bower_components/bootstrap/dist/css/bootstrap.css'),
+            jquery: path.resolve('node_modules/jquery/dist/jquery.min.js'),
+            datepicker: path.resolve('bower_components/datepicker/dist/js/bootstrap-datepicker.min.js'),
+            datepickercss: path.resolve('bower_components/datepicker/dist/css/bootstrap-datepicker.min.css'),
+            datepickercn: path.resolve('bower_components/datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js')
+        },
         extensions: ['', '.js', '.css', '.json']
     },
     node: {
