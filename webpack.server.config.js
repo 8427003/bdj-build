@@ -28,7 +28,7 @@ var config = {
             path.resolve('./node_modules'),
         ],
         alias: {
-            bootstrap:  path.resolve('bower_components/bootstrap/dist/css/bootstrap.css'),
+            bootstrap:  path.resolve('bower_components/bootstrap/dist/css/bootstrap.min.css'),
             jquery: path.resolve('node_modules/jquery/dist/jquery.min.js'),
             datepicker: path.resolve('bower_components/datepicker/dist/js/bootstrap-datepicker.min.js'),
             datepickercss: path.resolve('bower_components/datepicker/dist/css/bootstrap-datepicker.min.css'),
@@ -85,7 +85,7 @@ var config = {
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
                 options: {
-                    presets: [["es2015", { "modules": false }],'react']
+                    presets: ['es2015','react']
                 }
             },
             {
