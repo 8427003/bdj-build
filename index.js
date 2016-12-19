@@ -11,6 +11,7 @@ var webpack = require('webpack');
 var clientConfig = require('./webpack.client.config.js');
 var serverConfig =require('./webpack.server.config.js');
 var server = require('bdj-container/index-2.js')
+var statsConf = require('./Util.js').stats;
 var isProduction = process.env.NODE_ENV === 'production' ? true : false;
 var clientCompiler = null;
 var serverCompiler = null;
@@ -35,21 +36,14 @@ if (isProduction) {
             console.log('Packaging dependences finish: ', (new Date() - pStartTime)/1000 + 's');
         }
     );
-
-    serverCompiler.run(function (err, stat){
-        if(err) {
-            console.log(err);
-            return;
-        }
-        console.log('Server build '+ stat.hash +' in '+ (stat.endTime - stat.startTime)/1000 +'s');
+    serverCompiler.run(function (err, stats){
+        if(!processError(err, stats)) return;
+        console.log('Server build '+ stats.hash +' in '+ (stats.endTime - stats.startTime)/1000 +'s');
     });
 
-    clientCompiler.run(function (err, stat){
-        if(err) {
-            console.log(err);
-            return;
-        }
-        console.log('Client build '+ stat.hash +' in '+ (stat.endTime - stat.startTime)/1000 +'s');
+    clientCompiler.run(function (err, stats){
+        if(!processError(err, stats)) return;
+        console.log('Client build '+ stats.hash +' in '+ (stats.endTime - stats.startTime)/1000 +'s');
     });
 
     return;
@@ -58,16 +52,27 @@ if (isProduction) {
 
 serverCompiler.watch({
     aggregateTimeout: 300 // wait so long for more changes
-}, function (err, stat){
-    if(err) {
-        console.log(err);
-        return;
-    }
-    console.log('Server build '+ stat.hash +' in '+ (stat.endTime - stat.startTime) +'ms');
+}, function (err, stats){
+    if(!processError(err, stats)) return;
+    console.log('Server build '+ stats.hash +' in '+ (stats.endTime - stats.startTime) +'ms');
     reloadApp();
 })
 
-
+function processError(err, stats) {
+    if (err) {
+        console.error(err.stack || err);
+        if (err.details) {
+            console.error(err.details);
+        }
+        return;
+    }
+    if (stats.hasErrors()) {
+        const info = stats.toString(Object.assign({}, statsConf, {errors: true}));
+        console.error(info);
+        return;
+    }
+    return true;
+}
 
 
 function _runApp() {
@@ -77,11 +82,18 @@ function _runApp() {
     });
     var dev = require('webpack-dev-middleware')(clientCompiler, {
         noInfo: true,
-        stats: {
-            colors: true
-        },
+        quiet: true,
         publicPath: '/static/',
-
+        reporter: function (reporterOptions) {
+            var state = reporterOptions.state;
+            var stats = reporterOptions.stats;
+            var options = reporterOptions.options;
+            if(state) {
+                if (stats.hasErrors()) {
+                    console.log(stats.toString(Object.assign({},statsConf, {errors: true})));
+                }
+            }
+        }
     });
     dev.waitUntilValid(function (){
         console.info('Express server listening on port ' + app.get('port'));

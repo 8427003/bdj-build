@@ -23,7 +23,7 @@ var config = {
         filename: './dist/app/route.js'
     },
     resolve: {
-        root: [
+        modules: [
             path.resolve('./src'),
             path.resolve('./node_modules'),
         ],
@@ -34,7 +34,7 @@ var config = {
             datepickercss: path.resolve('bower_components/datepicker/dist/css/bootstrap-datepicker.min.css'),
             datepickercn: path.resolve('bower_components/datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js')
         },
-        extensions: ['', '.js', '.css', '.json']
+        extensions: ['.js', '.css', '.json']
     },
     node: {
         __dirname  :  false,
@@ -53,15 +53,23 @@ var config = {
             },
             {
                 test: /\.less$/,
-                loader: 'css-loader/locals!less'
-            },
-            {
-                test: /\.html$/,
-                loader: "html?-minimize"
+                use: [
+                    {
+                        loader: "css-loader/locals"
+                    },
+                    {
+                        loader: "less-loader"
+                    }
+                ]
             },
             {
                 test: /\.html/,
-                loader: 'ejs-loader'
+                loader: "ejs-loader",
+                options: {
+                    evaluate: /\{\{(.+?)\}\}/gim,
+                    interpolate: /\{\{=(.+?)\}\}/gim,
+                    escape: /\{\{-(.+?)\}\}/gim
+                }
             },
             {
                 test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -75,10 +83,9 @@ var config = {
             {
                 test: /\.jsx?$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: ['babel'],
-                query: {
-                    presets: ['es2015','react'],
-                     compact: false
+                loader: 'babel-loader',
+                options: {
+                    presets: [["es2015", { "modules": false }],'react']
                 }
             },
             {
@@ -91,9 +98,10 @@ var config = {
 };
 
 if (!isProduction) {
-    config.devtool = 'eval';
+    config.devtool = 'eval-source-map';
     config.plugins.push(
-        new webpack.BannerPlugin('require("source-map-support").install();', {
+        new webpack.BannerPlugin({
+            banner: 'require("source-map-support").install();',
             raw: true,
             entryOnly: false
         })
