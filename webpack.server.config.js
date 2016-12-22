@@ -98,7 +98,7 @@ var config = {
 };
 
 if (!isProduction) {
-    config.devtool = 'eval-source-map';
+    config.devtool = 'cheap-module-source-map';
     config.plugins.push(
         new webpack.BannerPlugin({
             banner: 'require("source-map-support").install();',
