@@ -78,7 +78,8 @@ function processError(err, stats) {
 function _runApp() {
     app = server.createApp({
         "publicPath": path.join(process.cwd(), "/dist/public"),
-        "appPath": path.join(process.cwd(), "/dist/app")
+        "appPath": path.join(process.cwd(), "/dist/app"),
+        "port": 8080
     });
     var dev = require('webpack-dev-middleware')(clientCompiler, {
         noInfo: true,
